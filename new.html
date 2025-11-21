@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WebTech Practice</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f1f5f9;
+      --text-muted: #94a3b8;
+      --btn-bg: linear-gradient(to right, #2563eb, #3b82f6);
+      --btn-text: #fff;
+    }
+
+    body.light {
+      --bg-color: #ffffff;
+      --card-bg: #f1f5f9;
+      --text-color: #0f172a;
+      --text-muted: #475569;
+      --btn-bg: linear-gradient(to right, #3b82f6, #60a5fa);
+      --btn-text: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+
+    html { scroll-behavior: smooth; } /* native smooth scrolling */
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+      line-height: 1.6;
+      padding: 0 1rem;
+    }
+
+    /* Navbar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--card-bg);
+      border-radius: 12px;
+      margin: 1rem auto;
+      max-width: 1200px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.3rem;
+      background: linear-gradient(to right, #60a5fa, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(59, 130, 246, 0.8),
+                   0 0 20px rgba(59, 130, 246, 0.6);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a, .nav-links button {
+      text-decoration: none;
+      color: var(--text-color);
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover, .nav-links button:hover {
+      color: #3b82f6;
+    }
+
+    .theme-toggle {
+      cursor: pointer;
+      padding: 0.4rem 0.8rem;
+      border: 1px solid var(--text-muted);
+      border-radius: 20px;
+      font-size: 0.9rem;
+      background: none;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn {
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: 0.3s;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .btn-outline {
+      border: 1px solid var(--text-muted);
+      color: var(--text-color);
+    }
+
+    .btn-outline:hover {
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+
+    .btn-primary {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    /* Hero Section */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 2rem;
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 1rem; }
+    .hero p { font-size: 1rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+    .cta { display:flex; gap:1rem; flex-wrap:wrap; }
+
+    /* Feature Card + Carousel */
+    .feature-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel { position: relative; overflow: hidden; }
+    .carousel-inner { position: relative; height: 150px; }
+    .carousel-item {
+      position: absolute; top:0; left:0; width:100%; opacity:0; transition: opacity 0.6s ease-in-out, transform 0.4s;
+      transform: translateY(8px);
+      padding: 0 1rem;
+    }
+    .carousel-item.active { opacity:1; position:relative; transform: translateY(0); }
+    .carousel-item h3 { margin-bottom: 0.6rem; font-size: 1.2rem; }
+    .carousel-item p { font-size: 0.95rem; color: var(--text-muted); }
+
+    .carousel-dots { display:flex; justify-content:center; gap:0.5rem; margin-top:1rem; }
+    .dot { width:10px; height:10px; border-radius:50%; background: var(--text-muted); cursor:pointer; }
+    .dot.active { background: #3b82f6; }
+
+    .carousel-arrow {
+      position:absolute; top:50%; transform:translateY(-50%); background: rgba(0,0,0,0.4);
+      color:#fff; border:none; padding:0.5rem 0.8rem; cursor:pointer; border-radius:50%; font-size:1rem;
+    }
+    .carousel-arrow.left { left:10px; }
+    .carousel-arrow.right { right:10px; }
+    .carousel-arrow:hover { background: rgba(0,0,0,0.6); }
+
+    /* About & Main */
+    .about {
+      text-align: center;
+      padding: 4rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .about h2 { font-size: 1.6rem; margin-bottom: 1rem; }
+    .about p { font-size:1rem; color: var(--text-muted); line-height:1.6; }
+
+    .main {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      text-align: center;
+    }
+
+    .main h1 { font-size: 2rem; margin-bottom: 1rem; }
+    .main p.description { font-size:1rem; color:#cbd5e1; margin-bottom:2rem; line-height:1.6; }
+
+    .features { display:flex; flex-direction:column; gap:1rem; align-items:center; }
+
+    .feature-card.small {
+      background-color: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      width:100%;
+      max-width:700px;
+      text-align:left;
+      font-size:0.95rem;
+      color: #e2e8f0;
+      display:flex; align-items:center; gap:0.5rem;
+    }
+
+    .feature-card.small .check { color: #10b981; font-weight: bold; }
+
+    /* Section */
+    .section { padding: 4rem 2rem 2rem 2rem; text-align:center; }
+    .section h2 { font-size:2rem; margin-bottom:3rem; }
+
+    .grid {
+      display:grid;
+      gap:1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      max-width:1100px; margin:0 auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius:12px; padding:1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      text-align:left; transition: transform 0.3s ease;
+    }
+    .card:hover { transform: translateY(-4px); }
+    .card h3 { font-size:1rem; margin-bottom:0.6rem; }
+    .card p { font-size:0.9rem; color:#cbd5e1; line-height:1.5; }
+
+    /* Footer */
+    footer {
+      background-color: rgba(15,23,42,0.95);
+      padding:1rem 2rem;
+      color: #94a3b8; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;
+      font-size:0.85rem; margin-top:3rem;
+    }
+
+    .footer-left { margin-bottom:1rem; }
+    .footer-right { display:flex; gap:0.6rem; flex-wrap:wrap; }
+    .footer-right button {
+      background: rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.1);
+      padding:0.4rem 0.8rem; border-radius:999px; font-size:0.8rem; cursor:pointer;
+    }
+    .footer-right button:hover { background: rgba(255,255,255,0.08); }
+
+    /* Responsive */
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; text-align:center; } .hero .cta { justify-content:center; } }
+    @media (max-width: 600px) {
+      .hero h1 { font-size:1.8rem; }
+      .nav-links { gap:0.7rem; }
+      footer { flex-direction:column; align-items:flex-start; }
+      nav { padding: 0.8rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">WebTech Practice</div>
+    <div class="nav-links" role="navigation" aria-label="Main Navigation">
+      <!-- anchor hrefs allow browser native scrolling (works with html {scroll-behavior: smooth}) -->
+      <a href="#about" class="nav-link">About</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+
+      <button class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Toggle theme">
+        <span id="theme-icon" aria-hidden="true">☀️</span> <span class="sr-only">Theme</span>
+      </button>
+
+      <a href="index.html" class="btn btn-outline">Log In</a>
+      <a href="create.html" class="btn btn-primary">Sign Up</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-text">
+      <h1 id="hero-heading">Launch your Web Tech practice site in minutes</h1>
+      <p>A clean, modern starter template with Login, Signup, Dashboard, Profile and Logout pages using only HTML, CSS and JavaScript. Perfect for learning and practicing web development fundamentals.</p>
+      <div class="cta">
+        <a href="create.html" class="btn btn-primary">Get Started</a>
+        <a href="#" class="btn btn-outline">Watch Demo</a>
+      </div>
+    </div>
+
+    <div class="feature-card" aria-hidden="false">
+      <div class="carousel" aria-roledescription="carousel" aria-label="Feature carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active" role="group" aria-roledescription="slide" aria-label="1 of 3">
+            <h3>Practice-First Design</h3>
+            <p>Easily customizable components, clean structure, responsive layout.</p>
+          </div>
+          <div class="carousel-item" role="group" aria-roledescription="slide" aria-label="2 of 3">
+            <h3>Responsive Layout</h3>
+            <p>Seamlessly adapts to desktops, tablets, and smartphones without extra coding.</p>
+          </div>
+          <div class="carousel-item" role="group" aria-roledescription="slide" aria-label="3 of 3">
+            <h3>Beginner Friendly</h3>
+            <p>No frameworks required. Simple HTML, CSS, and JavaScript to get you started fast.</p>
+          </div>
+        </div>
+
+        <button class="carousel-arrow left" id="prevBtn" aria-label="Previous slide">&#10094;</button>
+        <button class="carousel-arrow right" id="nextBtn" aria-label="Next slide">&#10095;</button>
+
+        <div class="carousel-dots" role="tablist" aria-label="Carousel indicators">
+          <div class="dot active" role="tab" tabindex="0" aria-selected="true" data-index="0"></div>
+          <div class="dot" role="tab" tabindex="0" aria-selected="false" data-index="1"></div>
+          <div class="dot" role="tab" tabindex="0" aria-selected="false" data-index="2"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="about" aria-labelledby="about-heading">
+    <h2 id="about-heading">About This Project</h2>
+    <p>
+      This comprehensive template is designed for students and developers to practice modern web fundamentals: semantic HTML, responsive CSS, and functional JavaScript. It’s clean, lightweight, and beginner-friendly — without any frameworks or complex installations.
+    </p>
+
+    <br>
+
+    <div class="features" aria-hidden="false">
+      <div class="feature-card small"><span class="check">✓</span> Single-file pages you can open directly in any modern browser</div>
+      <div class="feature-card small"><span class="check">✓</span> Consistent design system with CSS custom properties and smooth animations</div>
+      <div class="feature-card small"><span class="check">✓</span> Fully accessible with keyboard navigation and semantic HTML structure</div>
+      <div class="feature-card small"><span class="check">✓</span> Mobile-first responsive design that works on all devices</div>
+      <div class="feature-card small"><span class="check">✓</span> Clean, readable code with extensive comments for learning</div>
+      <div class="feature-card small"><span class="check">✓</span> Modern CSS techniques including Grid, Flexbox, and custom properties</div>
+    </div>
+  </section>
+
+  <!-- Services / What's Included -->
+  <section id="services" class="section" aria-labelledby="services-heading">
+    <h2 id="services-heading">What's Included</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>🔐 Authentication Templates</h3>
+        <p>Beautiful login and signup forms with real-time validation, error handling, and seamless localStorage integration.</p>
+      </div>
+      <div class="card">
+        <h3>📋 Dashboard Layout</h3>
+        <p>Professional sidebar navigation with responsive design and comprehensive user profile management interface.</p>
+      </div>
+      <div class="card">
+        <h3>👤 Profile Management</h3>
+        <p>Editable user profile forms with persistent data storage and real-time preview of changes.</p>
+      </div>
+      <div class="card">
+        <h3>🔐 Logout Flow</h3>
+        <p>Secure session clearing with confirmation dialogs and smooth redirect handling back to login.</p>
+      </div>
+      <div class="card">
+        <h3>🌗 Theme System</h3>
+        <p>Elegant dark/light mode toggle with system preference detection and cross-page persistence.</p>
+      </div>
+      <div class="card">
+        <h3>🌿 UI Components</h3>
+        <p>Reusable buttons, cards, forms, modals, and navigation elements with consistent styling.</p>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-left">
+      © <span id="year"></span> WebTech Practice. Built for learning and growth.
+    </div>
+
+    <div class="footer-right">
+      <!-- footer buttons will scroll, not navigate (JS handles) -->
+      <button class="scroll-btn" data-target="#about">About</button>
+      <button class="scroll-btn" data-target="#services">Services</button>
+      <button onclick="window.location.href='index.html'">Login</button>
+      <button onclick="window.location.href='create.html'">Signup</button>
+    </div>
+  </footer>
+
+  <script>
+    /* Wrap logic to run after DOM is ready */
+    document.addEventListener('DOMContentLoaded', function () {
+      // Year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Theme toggle with persistence
+      const body = document.body;
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const saved = localStorage.getItem('wt-theme');
+      if (saved === 'light') body.classList.add('light');
+
+      function updateThemeIcon() {
+        themeIcon.textContent = body.classList.contains('light') ? '🌙' : '☀️';
+        themeToggle.setAttribute('aria-pressed', body.classList.contains('light'));
+      }
+      updateThemeIcon();
+
+      themeToggle.addEventListener('click', () => {
+        body.classList.toggle('light');
+        localStorage.setItem('wt-theme', body.classList.contains('light') ? 'light' : 'dark');
+        updateThemeIcon();
+      });
+
+      // Smooth scroll for footer buttons (also handle keyboard)
+      document.querySelectorAll('.scroll-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = document.querySelector(btn.getAttribute('data-target'));
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      // Ensure nav links focus/scroll nicely for keyboard users (anchors already do native smooth)
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          // Allow default anchor behavior (smooth) — but ensure focus after scrolling for accessibility
+          const href = link.getAttribute('href');
+          if (href && href.startsWith('#')) {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              // move focus for screen-readers after tiny delay (post-scroll)
+              setTimeout(() => {
+                target.setAttribute('tabindex', '-1');
+                target.focus({ preventScroll: true });
+              }, 400);
+            }
+          }
+        });
+      });
+
+      // Carousel logic
+      const slides = Array.from(document.querySelectorAll('.carousel-item'));
+      const dots = Array.from(document.querySelectorAll('.dot'));
+      const nextBtn = document.getElementById('nextBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      let currentIndex = slides.findIndex(s => s.classList.contains('active'));
+      if (currentIndex === -1) currentIndex = 0;
+      let autoSlideTimer = null;
+      const total = slides.length;
+
+      function showSlide(index) {
+        slides.forEach((s, i) => {
+          s.classList.toggle('active', i === index);
+          if (dots[i]) {
+            dots[i].classList.toggle('active', i === index);
+            dots[i].setAttribute('aria-selected', i === index ? 'true' : 'false');
+          }
+        });
+        currentIndex = index;
+      }
+
+      function nextSlide() { showSlide((currentIndex + 1) % total); }
+      function prevSlide() { showSlide((currentIndex - 1 + total) % total); }
+
+      nextBtn.addEventListener('click', () => { nextSlide(); resetAutoSlide(); });
+      prevBtn.addEventListener('click', () => { prevSlide(); resetAutoSlide(); });
+
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          const idx = parseInt(dot.getAttribute('data-index'), 10);
+          if (!Number.isNaN(idx)) { showSlide(idx); resetAutoSlide(); }
+        });
+        dot.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            dot.click();
+          }
+        });
+      });
+
+      function startAutoSlide() {
+        stopAutoSlide();
+        autoSlideTimer = setInterval(nextSlide, 5000);
+      }
+      function stopAutoSlide() {
+        if (autoSlideTimer) { clearInterval(autoSlideTimer); autoSlideTimer = null; }
+      }
+      function resetAutoSlide() { stopAutoSlide(); startAutoSlide(); }
+
+      // Pause slide on hover/focus for accessibility
+      const carousel = document.querySelector('.carousel');
+      carousel.addEventListener('mouseenter', stopAutoSlide);
+      carousel.addEventListener('mouseleave', startAutoSlide);
+      carousel.addEventListener('focusin', stopAutoSlide);
+      carousel.addEventListener('focusout', startAutoSlide);
+
+      startAutoSlide();
+
+      // Small enhancement: enable keyboard left/right navigation when carousel has focus
+      document.addEventListener('keydown', (e) => {
+        // left/right on arrow keys
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+      });
+    });
+  </script>
+</body>
+</html>
